@@ -58,4 +58,40 @@ public:
         sendCode(static_cast<int>(Protocol::PAR_NUM));
         sendInt(param);
     }
+
+    void sendStringParameter(const std::string& param) {
+        sendCode(static_cast<int>(Protocol::PAR_STRING));
+        sendInt(static_cast<int>(param.size()));
+        for (char c : param) {
+            sendByte(static_cast<unsigned char>(c));
+        }
+        std::cout << "[sendStringParam] " << param << std::endl;
+    }
+
+    int recvCode() {
+        int code = recvByte();
+        std::cout << "[recvCode] " << code << std::endl;
+        return code;
+    }
+
+    int recvInt() {
+        int b1 = recvByte();
+        std::cout << "[recvInt] " << b1 << std::endl;
+        int b2 = recvByte();
+        std::cout << "[recvInt] " << b2 << std::endl;
+        int b3 = recvByte();
+        std::cout << "[recvInt] " << b3 << std::endl;
+        int b4 = recvByte();
+        std::cout << "[recvInt] " << b4 << std::endl;
+    }
+
+    int recvIntParameter() {
+        int code = recvCode();
+        if (code != static_cast<int>(Protocol::PAR_NUM)) {
+            throw ProtocolViolationException("Receive numeric parameter");
+        }
+        return recvInt();
+    }
+
+    std::string recvStringParameter
 }
