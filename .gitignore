@@ -39,3 +39,9 @@
 
 # debug information files
 *.dwo
+
+# local build artifacts
+.DS_Store
+build/
+example/myclient
+example/myserver
