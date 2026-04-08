@@ -45,3 +45,4 @@
 build/
 example/myclient
 example/myserver
+tests/db_smoke
