@@ -90,8 +90,26 @@ public:
         if (code != static_cast<int>(Protocol::PAR_NUM)) {
             throw ProtocolViolationException("Receive numeric parameter");
         }
+        std::cout << "[recvIntParameter] " << code << std::endl;
         return recvInt();
     }
 
-    std::string recvStringParameter
-}
+    std::string recvStringParameter() {
+        int code = recvCode();
+        if (code != static_cast<int>(Protocol::PAR_STRING)) {
+            throw ProtocolViolationException("Receive string parameter");
+        }
+        int n = recvInt();
+        if (n < 0) {
+            throw ProtocolViolationException("Receive string parameter");
+        }
+        std::string result;
+        result.reserve(n);
+        for (int i = 0; i < n; ++i) {
+            char ch = static_cast<char>(recvByte());
+            result + ch;
+        }
+        std::cout << "[recvStringParameter] " << result << std::endl;
+        return result;
+    }
+};
