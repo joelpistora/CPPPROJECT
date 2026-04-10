@@ -4,4 +4,6 @@ target_sources(clientserver
         connection.cc
         inmemorydatabase.cc
         server.cc
+        newsserver.cc
+        messageHandler.cc
 )
