@@ -29,9 +29,9 @@ all: lib/libclientserver.a
 # Doesn't seem to do any damage on other systems.
 
 
-lib/libclientserver.a: src/connection.o src/server.o src/messageHandler.o src/inmemorydatabase.o
+lib/libclientserver.a: src/connection.o src/server.o src/messageHandler.o src/inmemorydatabase.o src/diskdatabase.o
 	mkdir -p lib
-	ar rv lib/libclientserver.a  src/connection.o src/server.o src/messageHandler.o src/inmemorydatabase.o
+	ar rv lib/libclientserver.a  src/connection.o src/server.o src/messageHandler.o src/inmemorydatabase.o src/diskdatabase.o
 	ranlib lib/libclientserver.a
 
 # Phony targets
@@ -47,7 +47,7 @@ distclean: clean
 	-rm lib/libclientserver.a
 	-rmdir lib
 	-rm $(SRC:.cc=.d) 
-	make -C example distclean
+	make -C app distclean
 
 
 # Include the *.d files

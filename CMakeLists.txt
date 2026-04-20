@@ -86,9 +86,9 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 # message(STATUS "C++ flags, Release configuration with Debug info: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 # message(STATUS "C++ flags, minimal Release configuration: ${CMAKE_CXX_FLAGS_MINSIZEREL}")
 
-##################### examples are in a subdirectory ############
+##################### application targets are in a subdirectory ############
 
-add_subdirectory(example) # Add these late to make flags, etc. visible
+add_subdirectory(app) # Add these late to make flags, etc. visible
 
 
 # Print summary of configuration
