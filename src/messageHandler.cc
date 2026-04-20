@@ -1,15 +1,27 @@
 #include "messageHandler.h"
 #include <iostream>
 
-MessageHandler::MessageHandler(Connection& connection)
-    : conn(connection)
+MessageHandler::MessageHandler(Connection& connection, bool debug)
+    : conn(connection), debug(debug)
 {
+}
+
+void MessageHandler::printInt(const std::string& code, int value) {
+    if (debug) {
+        std::cout << code << " " << value << std::endl;
+    }
+}
+
+void MessageHandler::printString(const std::string& code, const std::string& value) {
+    if (debug) {
+        std::cout << code << " " << value << std::endl;
+    }
 }
 
 void MessageHandler::sendByte(int code) {
     try {
         conn.write(static_cast<unsigned char>(code));
-        std::cout << "[sendByte] " << code << std::endl;
+        printInt("[sendByte]", code);
     } catch (ConnectionClosedException&) {
         throw;
     }
@@ -18,7 +30,7 @@ void MessageHandler::sendByte(int code) {
 int MessageHandler::recvByte() {
     try {
         int code = conn.read();
-        std::cout << "[recvByte] " << code << std::endl;
+        printInt("[recvByte]", code);
         return code;
     } catch (ConnectionClosedException&) {
         throw;
@@ -27,7 +39,7 @@ int MessageHandler::recvByte() {
 
 void MessageHandler::sendCode(Protocol code) {
     sendByte(static_cast<int>(code));
-    std::cout << "[sendCode] " << static_cast<int>(code) << std::endl;
+    printInt("[sendCode]", static_cast<int>(code));
 }
 
 void MessageHandler::sendInt(int value) {
@@ -48,12 +60,12 @@ void MessageHandler::sendStringParameter(const std::string& param) {
     for (char c : param) {
         sendByte(static_cast<unsigned char>(c));
     }
-    std::cout << "[sendStringParam] " << param << std::endl;
+    printString("[sendStringParam]", param);
 }
 
 int MessageHandler::recvCode() {
     int code = recvByte();
-    std::cout << "[recvCode] " << code << std::endl;
+    printInt("[recvCode]", code);
     return code;
 }
 
@@ -88,6 +100,6 @@ std::string MessageHandler::recvStringParameter() {
         char ch = static_cast<char>(recvByte());
         result += ch;
     }
-    std::cout << "[recvStringParameter] " << result << std::endl;
+    printString("[recvStringParameter]", result);
     return result;
 }

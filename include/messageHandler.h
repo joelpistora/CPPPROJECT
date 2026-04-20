@@ -15,12 +15,16 @@ public:
 class MessageHandler {
 private:
     Connection& conn;
+    bool debug;
 
     void sendByte(int code);
     int recvByte();
-
+    
+    void printInt(const std::string& code, int value);
+    void printString(const std::string& code,  const std::string& value);
 public:
-    MessageHandler(Connection& connection);
+    MessageHandler(Connection& connection, bool debug = true);
+
 
     void sendCode(Protocol code);
     void sendInt(int value);
