@@ -4,6 +4,7 @@
 #include "server.h"
 #include "newsdatabase.h"
 #include "inmemorydatabase.h"
+#include "diskdatabase.h"
 #include "newsmodel.h"
 #include "messageHandler.h"
 
@@ -252,8 +253,8 @@ void process_request(std::shared_ptr<Connection>& conn, NewsDatabase& db)
 
 Server init(int argc, char* argv[])
 {
-    if (argc != 2) {
-        cerr << "Usage: myserver port-number" << endl;
+    if (argc != 2 && argc != 4) {
+        cerr << "Usage: myserver port-number [--disk <path>]" << endl;
         exit(1);
     }
 
@@ -292,11 +293,34 @@ void serve_one(Server& server, NewsDatabase& db)
 
 int main(int argc, char* argv[])
 {
+    
     auto server = init(argc, argv);
-    InMemoryDatabase db;
+
+    bool onDisk = false;
+    std::string diskPath;
+
+    if (argc == 4) {
+        std::string flag = argv[2];
+
+        if (flag != "--disk") {
+            cerr << "Usage: myserver port-number [--disk <path>]" << endl;
+            return 1;
+
+        }
+        onDisk = true;
+
+        diskPath = argv[3];
+    }
+
+    std::unique_ptr<NewsDatabase> db;
+
+    if (onDisk) {
+        db = std::unique_ptr<NewsDatabase>(new DiskDatabase(diskPath));
+    } else {
+        db = std::unique_ptr<NewsDatabase>(new InMemoryDatabase());
+    }
 
     while (true) {
-        serve_one(server, db);
-    }
-    return 0;
+        serve_one(server, *db);
+    }        
 }

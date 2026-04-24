@@ -544,21 +544,22 @@ int app(Connection& conn)
                     cout << "Create a newsgroup" << endl;
                     cout << "   create ng [name]\n" << endl;
                     cout << "Delete a newsgroup" << endl;
-                    cout << "   delete ng [name]\n" << endl;
+                    cout << "   delete ng [newsgroup id]\n" << endl;
                     cout << "List articles in a newsgroup" << endl;
-                    cout << "   list [name]\n" << endl;
+                    cout << "   list [newsgroup id]\n" << endl;
                     cout << "Create an article" << endl;
                     cout << "   create a [newsgroup id] [title] [author] [text]\n" << endl;
                     cout << "Delete an article" << endl;
                     cout << "   delete a [newsgroup id] [article id]\n" << endl;
                     cout << "Get an article" << endl;
-                    cout << "   get [newsgroup id] [title]\n" << endl;
+                    cout << "   read [newsgroup id] [article id]\n" << endl;
                     cout << "Quit" << endl;
                     cout << "   quit\n" << endl;
                 }
                 break;
                 case Command::QUIT: {
-                    cout << "quit command received" << endl;
+                    cout << "Bye!" << endl;
+                    return 0;
                 }
                 break;
                 case Command::UNKNOWN: {
