@@ -1,0 +1,49 @@
+sequenceDiagram
+participant Client
+participant Connection
+participant Server
+participant MessageHandler
+participant NewsDatabase
+
+Note over Server: serve_one(server, db)
+
+Server->>Connection: waitForActivity()
+
+Server->>Server: process_request()
+
+Server->>MessageHandler: recvCode()
+
+MessageHandler->>MessageHandler: recvCode()
+MessageHandler->>MessageHandler: recvBytes()
+
+MessageHandler->>Connection: read()
+
+Server->>Server: switch(COM_GET_ART)
+
+Server->>Server: handle_get_art(mh, db)
+
+Server->>MessageHandler: recvIntParameter(ngId)
+Server->>MessageHandler: recvIntParameter(aId)
+
+Server->>NewsDatabase: getArticle(ngId, aId)
+NewsDatabase-->>Server: GetArticleResult res
+
+Server->>MessageHandler: sendCode(ANS_GET_ART)
+
+alt article exists
+    Server->>MessageHandler: sendCode(ANS_ACK)
+    Server->>MessageHandler: sendStringParameter(title)
+    Server->>MessageHandler: sendStringParameter(author)
+    Server->>MessageHandler: sendStringParameter(text)
+else newsgroup missing
+    Server->>MessageHandler: sendCode(ANS_NAK)
+    Server->>MessageHandler: sendCode(REE_NG_DOES_NOT_EXIST)
+else
+    Server->>MessageHandler: sendCode(ANS_NAK)
+    Server->>MessageHandler: sendCode(REE_ART_DOES_NOT_EXIST)
+end
+
+Server->>MessageHandler: sendCode(ANS_END)
+
+MessageHandler->>Connection: write bytes back
+Connection-->>Client: response delivered

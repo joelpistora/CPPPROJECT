@@ -1,0 +1,75 @@
+classDiagram
+    %% Core connection/server/message pieces
+        %% Core connection/server/message pieces
+        class Connection
+        class Server
+        class MessageHandler {
+            +conn : Connection&
+            +debug : bool
+        }
+
+        %% Client and server applications
+        class NewsClient
+        class NewsServer
+
+        %% Database abstraction and implementations
+        class NewsDatabase <<interface>>
+        class InMemoryDatabase {
+            +groups : vector<StoredNewsgroup>
+            +nextNewsgroupId : int
+        }
+        class OnDiskDatabase {
+            +storagePath : string
+        }
+
+        %% Data model classes
+        class NewsgroupSummary {
+            +id : int
+            +name : string
+        }
+        class ArticleSummary {
+            +id : int
+            +title : string
+        }
+        class Article {
+            +id : int
+            +title : string
+            +author : string
+            +text : string
+        }
+        class ListArticlesResult {
+            +status : DbResult
+            +articles : vector<ArticleSummary>
+        }
+        class GetArticleResult {
+            +status : DbResult
+            +article : Article
+        }
+
+        class Protocol <<enumeration>>
+        class ProtocolViolationException
+        class ConnectionClosedException
+
+        %% Relationships
+        Server o-- Connection : "manages (shared_ptr)"
+        MessageHandler --> Connection : "uses (ref)"
+
+        NewsClient --> MessageHandler : "uses"
+        NewsClient --> Connection : "uses"
+
+        NewsServer --> Server : "uses"
+        NewsServer --> MessageHandler : "uses"
+        NewsServer --> NewsDatabase : "uses"
+
+        InMemoryDatabase --|> NewsDatabase
+        OnDiskDatabase --|> NewsDatabase
+
+        NewsDatabase ..> NewsgroupSummary
+        NewsDatabase ..> ListArticlesResult
+        NewsDatabase ..> GetArticleResult
+        ListArticlesResult o-- ArticleSummary : "contains"
+        GetArticleResult --> Article : "contains"
+
+        %% Notes
+        note for NewsClient "Command-line client; uses MessageHandler to speak protocol"
+        note for NewsServer "Server program; dispatches Protocol commands and uses a NewsDatabase implementation"
